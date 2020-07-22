@@ -199,13 +199,21 @@ abstract class _CustomLayoutStateBase<T extends _SubSwiper> extends State<T>
         ? details.velocity.pixelsPerSecond.dx
         : details.velocity.pixelsPerSecond.dy;
 
+    if (widget.enabledDirections == SwiperEnabledDirections.NONE) {
+      return;
+    }
+
     if (_animationController.value >= 0.75 || velocity > 500.0) {
-      if (_currentIndex <= 0 && !widget.loop) {
+      if ((_currentIndex <= 0 && !widget.loop) ||
+          (widget.enabledDirections != SwiperEnabledDirections.ALL &&
+              widget.enabledDirections != SwiperEnabledDirections.NEXT)) {
         return;
       }
       _move(1.0, nextIndex: _currentIndex - 1);
     } else if (_animationController.value < 0.25 || velocity < -500.0) {
-      if (_currentIndex >= widget.itemCount - 1 && !widget.loop) {
+      if ((_currentIndex >= widget.itemCount - 1 && !widget.loop) ||
+          (widget.enabledDirections != SwiperEnabledDirections.ALL &&
+              widget.enabledDirections != SwiperEnabledDirections.PREVIOUS)) {
         return;
       }
       _move(0.0, nextIndex: _currentIndex + 1);
@@ -231,6 +239,17 @@ abstract class _CustomLayoutStateBase<T extends _SubSwiper> extends State<T>
                 _currentPos) /
             _swiperWidth /
             2;
+
+    if (value > 0.5 &&
+        widget.enabledDirections != SwiperEnabledDirections.ALL &&
+        widget.enabledDirections != SwiperEnabledDirections.NEXT) {
+      return;
+    } else if (value < 0.5 &&
+        widget.enabledDirections != SwiperEnabledDirections.ALL &&
+        widget.enabledDirections != SwiperEnabledDirections.PREVIOUS) {
+      return;
+    }
+
     // no loop ?
     if (!widget.loop) {
       if (_currentIndex >= widget.itemCount - 1) {

@@ -1,3 +1,7 @@
+## [1.2.0] - [2020/07/21]
+
+ * Add support for specifying enabled swipe directions
+
 ## [1.1.6] - [2020/07/16]
 
  * Fix index for custom layouts

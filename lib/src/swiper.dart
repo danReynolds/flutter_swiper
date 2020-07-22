@@ -23,6 +23,8 @@ const int kMiddleValue = 1000000000;
 
 enum SwiperLayout { DEFAULT, STACK, TINDER, CUSTOM }
 
+enum SwiperEnabledDirections { PREVIOUS, NEXT, ALL, NONE }
+
 class Swiper extends StatefulWidget {
   /// If set true , the pagination will display 'outer' of the 'content' container.
   final bool outer;
@@ -70,6 +72,9 @@ class Swiper extends StatefulWidget {
 
   /// Set to false to disable continuous loop mode.
   final bool loop;
+
+  /// Determines the enabled swipe directions
+  final SwiperEnabledDirections enabledDirections;
 
   ///Index number of initial slide.
   ///If not set , the `Swiper` is 'uncontrolled', which means manage index by itself
@@ -127,6 +132,7 @@ class Swiper extends StatefulWidget {
     this.onTap,
     this.control,
     this.loop: true,
+    this.enabledDirections: SwiperEnabledDirections.ALL,
     this.curve: Curves.ease,
     this.scrollDirection: Axis.horizontal,
     this.pagination,
@@ -471,6 +477,7 @@ class _SwiperState extends _SwiperTimerMixin {
     if (widget.layout == SwiperLayout.STACK) {
       return new _StackSwiper(
         loop: widget.loop,
+        enabledDirections: widget.enabledDirections,
         itemWidth: widget.itemWidth,
         itemHeight: widget.itemHeight,
         itemCount: widget.itemCount,
@@ -658,11 +665,13 @@ abstract class _SubSwiper extends StatefulWidget {
   final double itemWidth;
   final double itemHeight;
   final bool loop;
+  final SwiperEnabledDirections enabledDirections;
   final Axis scrollDirection;
 
   _SubSwiper(
       {Key key,
       this.loop,
+      this.enabledDirections,
       this.itemHeight,
       this.itemWidth,
       this.duration,
@@ -700,11 +709,13 @@ class _TinderSwiper extends _SubSwiper {
     IndexedWidgetBuilder itemBuilder,
     int index,
     bool loop,
+    SwiperEnabledDirections enabledDirections,
     int itemCount,
     Axis scrollDirection,
   })  : assert(itemWidth != null && itemHeight != null),
         super(
             loop: loop,
+            enabledDirections: enabledDirections,
             key: key,
             itemWidth: itemWidth,
             itemHeight: itemHeight,
@@ -735,10 +746,12 @@ class _StackSwiper extends _SubSwiper {
     IndexedWidgetBuilder itemBuilder,
     int index,
     bool loop,
+    SwiperEnabledDirections enabledDirections,
     int itemCount,
     Axis scrollDirection,
   }) : super(
             loop: loop,
+            enabledDirections: enabledDirections,
             key: key,
             itemWidth: itemWidth,
             itemHeight: itemHeight,
